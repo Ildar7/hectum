@@ -1,0 +1,21 @@
+.btnIcon {
+    margin-left: 5px;
+}
+
+.field {
+    flex: 1;
+}
+
+.modalBody {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 30px;
+}
+
+.fieldsBlock {
+    flex: calc(50% - 30px);
+}
+
+.settings {
+    margin-top: 15px;
+}

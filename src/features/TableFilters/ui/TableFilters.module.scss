@@ -1,0 +1,72 @@
+.btnIcon {
+    margin-right: 5px;
+}
+
+.filterTitle {
+    margin-bottom: 10px !important;
+}
+
+.filter {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+
+    input,
+    select {
+        height: 40px;
+        width: 100%;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.settings {
+    display: flex;
+    flex-wrap: wrap;
+    grid-gap: 15px;
+    margin-top: 15px;
+}
+
+.selectFilter {
+    min-width: 200px;
+}
+
+.filtersBlock {
+    margin-bottom: 30px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.selectFilterMultiple {
+    height: auto !important;
+}
+
+.full {
+    width: 100%;
+
+    input {
+        width: 100%;
+    }
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+
+    input {
+        width: 1em;
+        height: 1em;
+        margin-right: 5px;
+    }
+
+    label {
+        h6 {
+            margin-bottom: 0 !important;
+        }
+    }
+}

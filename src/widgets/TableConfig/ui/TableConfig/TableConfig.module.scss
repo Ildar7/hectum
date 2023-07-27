@@ -1,0 +1,37 @@
+.TableConfig {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    padding-bottom: 8px;
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.btnGreen {
+    color: var(--white) !important;
+}
+
+.btnIcon {
+    margin-right: 4px;
+    margin-top: 3px;
+}
+
+.addUserIcon {
+    width: calc(1rem + 4px) !important;
+    height: calc(1rem + 4px) !important;
+}
+
+.leftConfig,
+.rightConfig {
+    display: flex;
+    align-items: center;
+}

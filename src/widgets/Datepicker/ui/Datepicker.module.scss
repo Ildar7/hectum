@@ -1,0 +1,16 @@
+.Datepicker {
+    display: flex;
+    align-items: center;
+}
+
+.datepickerItem {
+    padding: 10px 15px;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+
+    &:focus {
+        border-color: var(--border-visited-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgb(50 31 219 / 25%);
+    }
+}
