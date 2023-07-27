@@ -12,7 +12,7 @@ import {
     StudentArrivalSourcesType,
     StudyDurationsType, StudyLanguagesType,
     TableFiltersType,
-} from '../../types/TableFilters';
+} from '../../types/tableFilters';
 
 export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkConfig<string>>(
     'filters/fetchTableFilters',
