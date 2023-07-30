@@ -81,7 +81,15 @@ export interface MaterialAssistanceTypesType {
     'id_finimatpomosh': number,
     'finimatpomosh': string
 }
+
+export interface CitizenshipTypesType {
+    'id_citizenship': number,
+    'citizenship': string,
+    'country_id': number
+}
+
 export interface TableFiltersType {
+
     gender: GenderType[];
     nationality: NationalityType[];
     speciality: SpecialitiesType[];
@@ -98,6 +106,7 @@ export interface TableFiltersType {
     financingSources: FinancingSourcesType[];
     admissionQuotasTypes: AdmissionQuotasTypesType[];
     materialAssistanceTypes: MaterialAssistanceTypesType[];
+    citizenshipTypes: CitizenshipTypesType[];
 }
 
 export interface TableFiltersSchema {

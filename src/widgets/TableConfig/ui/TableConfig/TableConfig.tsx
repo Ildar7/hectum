@@ -9,14 +9,18 @@ import { useSelector } from 'react-redux';
 import { TableFilters } from 'features/TableFilters';
 import { TableFields } from 'features/TableFields';
 import { getStudentsError, getStudentsIsLoading } from 'entities/Students';
+import { AddStudent } from 'entities/AddStudent';
 import cls from './TableConfig.module.scss';
 
 interface TableConfigProps {
-  className?: string;
+    className?: string;
+    onSaveFields: () => void;
+    onClearFields: () => void;
 }
-export const TableConfig = ({ className }: TableConfigProps) => {
+export const TableConfig = ({ className, onSaveFields, onClearFields }: TableConfigProps) => {
     const [visibleFiltersModal, setVisibleFiltersModal] = useState(false);
     const [visibleFieldsModal, setVisibleFieldsModal] = useState(false);
+    const [visibleAddNewStudent, setVisibleAddNewStudent] = useState(true);
     const isLoading = useSelector(getStudentsIsLoading);
     const error = useSelector(getStudentsError);
     const onShowFiltersModal = () => {
@@ -25,6 +29,10 @@ export const TableConfig = ({ className }: TableConfigProps) => {
 
     const onShowFieldsModal = () => {
         setVisibleFieldsModal(true);
+    };
+
+    const onShowAddNewStudentModal = () => {
+        setVisibleAddNewStudent(true);
     };
 
     return (
@@ -82,7 +90,8 @@ export const TableConfig = ({ className }: TableConfigProps) => {
                 <CButton
                     color="success"
                     className={classNames(cls.btn, {}, [cls.btnGreen])}
-                    disabled
+                    onClick={onShowAddNewStudentModal}
+                    disabled={!!error || isLoading}
                 >
                     <CIcon icon={cilPlus} className={classNames(cls.btnIcon, {}, [cls.addUserIcon])} />
                     Добавить студента
@@ -97,6 +106,13 @@ export const TableConfig = ({ className }: TableConfigProps) => {
             <TableFields
                 visible={visibleFieldsModal}
                 setVisible={setVisibleFieldsModal}
+                onSaveFields={onSaveFields}
+                onClearFields={onClearFields}
+            />
+
+            <AddStudent
+                visible={visibleAddNewStudent}
+                setVisible={setVisibleAddNewStudent}
             />
         </div>
     );

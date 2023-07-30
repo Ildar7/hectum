@@ -100,6 +100,11 @@ export interface StudentsType {
         'shifr_spec': string,
         'speciality': string
     },
+    'citizenship': {
+        'id_citizenship': number,
+        'citizenship': string,
+        'country_id': number
+    },
     'qualification': {
         'id_qual': number,
         'shifr_qual': string,

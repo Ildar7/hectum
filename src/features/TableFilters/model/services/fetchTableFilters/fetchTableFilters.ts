@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ThunkConfig } from 'app/providers/StoreProvider';
 import {
-    AdmissionQuotasTypesType,
+    AdmissionQuotasTypesType, CitizenshipTypesType,
     EducationsCoursesType,
     EducationsFormsType,
     EnrollmentTypesType, FinancingSourcesType, FinishedEducationTypesType,
@@ -28,6 +28,8 @@ export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkC
             const responseEducationsCourses = await extra.api.get<EducationsCoursesType[]>('/college/educations-courses/');
             const responseEducationsForms = await extra.api.get<EducationsFormsType[]>('/college/education-forms/');
             const responseEnrollmentTypes = await extra.api.get<EnrollmentTypesType[]>('/college/enrollment-types/');
+            const responseCitizenshipTypes = await extra.api.get<CitizenshipTypesType[]>('/college/citizenship/');
+
             const
                 responseStudentArrivalSources = await extra.api.get<
                         StudentArrivalSourcesType[]
@@ -78,6 +80,7 @@ export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkC
                 financingSources: responseFinancingSources.data,
                 admissionQuotasTypes: responseAdmissionQuotasTypes.data,
                 materialAssistanceTypes: responseMaterialAssistanceTypes.data,
+                citizenshipTypes: responseCitizenshipTypes.data,
             };
 
             return data;

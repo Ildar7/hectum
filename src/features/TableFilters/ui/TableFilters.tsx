@@ -9,8 +9,9 @@ import {
     CModalFooter,
     CModalHeader,
     CModalTitle,
+    CToaster,
 } from '@coreui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cilSearch } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import { Datepicker } from 'widgets/Datepicker';
@@ -24,6 +25,7 @@ import {
     getTableFiltersSelectedData,
 } from 'features/TableFilters/model/selectors/getTableFiltersSelectedData/getTableFiltersSelectedData';
 import { tableFiltersSelectedActions } from 'features/TableFilters';
+import { Toast } from 'shared/ui/Toast/Toast';
 import { getTableFiltersError } from '../model/selectors/getTableFiltersError/getTableFiltersError';
 import { getTableFiltersIsLoading } from '../model/selectors/getTableFiltersIsLoading/getTableFiltersIsLoading';
 import { getTableFiltersData } from '../model/selectors/getTableFiltersData/getTableFiltersData';
@@ -42,18 +44,49 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
     const error = useSelector(getTableFiltersError);
 
     const selectedFilters = useSelector(getTableFiltersSelectedData);
-
-    const [startBirthDate, setStartBirthDate] = useState<Date | null>(null);
-    const [endBirthDate, setEndBirthDate] = useState<Date | null>(null);
-
-    const [startArrivalDate, setStartArrivalDate] = useState<Date | null>(null);
-    const [endArrivalDate, setEndArrivalDate] = useState<Date | null>(null);
+    const [toast, addToast] = useState();
+    const toaster = useRef();
     const onCloseModal = () => {
         setVisible(false);
     };
 
+    const onChangeDate = (date: Date | null, filterName: string, when: string) => {
+        dispatch(tableFiltersSelectedActions.setBirthDateFilter(
+            [date?.toString(), filterName, when],
+        ));
+    };
+
     const onChangeSelect = (event: React.ChangeEvent<HTMLSelectElement>, filterName: string) => {
-        dispatch(tableFiltersSelectedActions.setFilter([filterName, event.target.value]));
+        dispatch(tableFiltersSelectedActions.setSelectFilter([filterName, event.target.value]));
+    };
+
+    const onChangeMultipleSelect = (event: React.ChangeEvent<HTMLSelectElement>, filterName: string) => {
+        const selectedOptionsValue = Array.from(event.target.selectedOptions).map((item) => item.value);
+        dispatch(tableFiltersSelectedActions.setSelectMultipleFilter([filterName, selectedOptionsValue]));
+    };
+
+    const validatePhoneNum = (phone: string): boolean => {
+        if (phone.length > 12) {
+            // @ts-ignore
+            addToast(Toast.error('Вы можете ввести не более 12 цифр!'));
+            return false;
+        }
+
+        return true;
+    };
+
+    const onChangeInput = (event: React.ChangeEvent<HTMLInputElement>, filterName: string) => {
+        if (filterName === 'phoneNumber') {
+            if (validatePhoneNum(event.target.value.replace(/\D/g, ''))) {
+                dispatch(tableFiltersSelectedActions.setInputFilter([filterName, event.target.value.replace(/\D/g, '')]));
+            }
+        } else {
+            dispatch(tableFiltersSelectedActions.setInputFilter([filterName, event.target.value]));
+        }
+    };
+
+    const onCheckHandler = (e: React.ChangeEvent<HTMLInputElement>, filterName: string) => {
+        dispatch(tableFiltersSelectedActions.setCheckboxFilter([e.target.checked, filterName]));
     };
 
     useEffect(() => {
@@ -71,9 +104,9 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
             <Text
                 theme={TextTheme.ERROR}
                 size={TextSize.M}
-                weight={TextWeight.BOLD}
+                weight={TextWeight.SEMIBOLD}
             >
-                Произошла ошибка при загрузке фильтров, попробуйте перезагрузить страницу
+                Произошла ошибка при загрузке данных, попробуйте перезагрузить страницу
             </Text>
         );
     } else {
@@ -85,10 +118,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                         <div className={classNames(cls.filter, {}, [cls.full])}>
                             <h6 className={cls.filterTitle}>Дата рождения</h6>
                             <Datepicker
-                                startDate={startBirthDate}
-                                endDate={endBirthDate}
-                                setStartDate={setStartBirthDate}
-                                setEndDate={setEndBirthDate}
+                                startDate={(selectedFilters?.birthDate.from ? new Date(selectedFilters?.birthDate.from) : null) || null}
+                                endDate={selectedFilters?.birthDate.to ? new Date(selectedFilters?.birthDate.to) : null || null}
+                                onChange={(date, filterName, when) => {
+                                    onChangeDate(date, 'birthDate', when);
+                                }}
                             />
                         </div>
                     </div>
@@ -124,7 +158,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     (event: React.ChangeEvent<HTMLSelectElement>) => { onChangeSelect(event, 'nationality'); }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.nationality.map((nationalityItem) => (
                                         <option
@@ -141,17 +175,38 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                             <h6 className={cls.filterTitle}>Гражданство</h6>
                             <CFormSelect
                                 className={cls.selectFilter}
+                                value={selectedFilters?.citizenship}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLSelectElement>) => { onChangeSelect(event, 'citizenship'); }
+                                }
                             >
-                                <option>Не выбрано</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
+                                <option value="null">Не выбрано</option>
+                                {
+                                    data?.citizenshipTypes.map((citizenship) => (
+                                        <option
+                                            key={citizenship.id_citizenship}
+                                            value={citizenship.id_citizenship}
+                                        >
+                                            {citizenship.citizenship}
+                                        </option>
+                                    ))
+                                }
                             </CFormSelect>
                         </div>
                     </div>
                     <div className={cls.settings}>
                         <div className={cls.filter}>
                             <h6 className={cls.filterTitle}>Номер телефона</h6>
-                            <CFormInput type="phone" placeholder="+7 (111) 122 77-71" />
+                            <CFormInput
+                                type="text"
+                                placeholder="+7 7172 112-12-12"
+                                value={selectedFilters?.phoneNumber}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChangeInput(event, 'phoneNumber');
+                                    }
+                                }
+                            />
                         </div>
                     </div>
                 </div>
@@ -167,7 +222,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     (event: React.ChangeEvent<HTMLSelectElement>) => { onChangeSelect(event, 'speciality'); }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.speciality.map((specialityItem) => (
                                         <option
@@ -189,7 +244,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     (event: React.ChangeEvent<HTMLSelectElement>) => { onChangeSelect(event, 'qualifications'); }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.qualifications.map((qualificationsItem) => (
                                         <option
@@ -211,10 +266,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 className={classNames(cls.selectFilter, {}, [cls.selectFilterMultiple])}
                                 value={selectedFilters?.studyDurations}
                                 onChange={
-                                    (event: React.ChangeEvent<HTMLSelectElement>) => { onChangeSelect(event, 'studyDurations'); }
+                                    (event: React.ChangeEvent<HTMLSelectElement>) => {
+                                        onChangeMultipleSelect(event, 'studyDurations');
+                                    }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.studyDurations.map((studyDurationItem) => (
                                         <option
@@ -235,11 +292,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 value={selectedFilters?.educationsCourses}
                                 onChange={
                                     (event: React.ChangeEvent<HTMLSelectElement>) => {
-                                        onChangeSelect(event, 'educationsCourses');
+                                        onChangeMultipleSelect(event, 'educationsCourses');
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.educationsCourses.map((educationCourseItem) => (
                                         <option
@@ -265,7 +322,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.educationsForms.map((educationFormItem) => (
                                         <option
@@ -283,10 +340,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                         <div className={classNames(cls.filter, {}, [cls.full])}>
                             <h6 className={cls.filterTitle}>Дата поступления</h6>
                             <Datepicker
-                                startDate={startArrivalDate}
-                                endDate={endArrivalDate}
-                                setStartDate={setStartArrivalDate}
-                                setEndDate={setEndArrivalDate}
+                                startDate={(selectedFilters?.arrivalDate.from ? new Date(selectedFilters?.arrivalDate.from) : null) || null}
+                                endDate={(selectedFilters?.arrivalDate.to ? new Date(selectedFilters?.arrivalDate.to) : null) || null}
+                                onChange={(date, filterName, when) => {
+                                    onChangeDate(date, 'arrivalDate', when);
+                                }}
                             />
                         </div>
                     </div>
@@ -302,7 +360,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.enrollmentTypes.map((enrollmentItem) => (
                                         <option
@@ -326,7 +384,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.studentArrivalSources.map((country) => (
                                         <option
@@ -350,7 +408,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.finishedEducationTypes.map((finishedEducationItem) => (
                                         <option
@@ -374,7 +432,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.studyLanguages.map((language) => (
                                         <option
@@ -395,6 +453,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Имеет доступ к экзаменам</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.hasAccessToExams}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'hasAccessToExams');
+                                    }
+                                }
                                 id="accessToExams"
                             />
                         </div>
@@ -414,7 +478,7 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.residenceTypes.map((residence) => (
                                         <option
@@ -431,11 +495,29 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                     <div className={cls.settings}>
                         <div className={cls.filter}>
                             <h6 className={cls.filterTitle}>Адрес фактического проживания</h6>
-                            <CFormInput type="text" placeholder="ул. Пушкина, д. 22" />
+                            <CFormInput
+                                type="text"
+                                placeholder="ул. Пушкина, д. 22"
+                                value={selectedFilters?.residentialAddress}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChangeInput(event, 'residentialAddress');
+                                    }
+                                }
+                            />
                         </div>
                         <div className={cls.filter}>
                             <h6 className={cls.filterTitle}>Адрес временного проживания</h6>
-                            <CFormInput type="text" placeholder="ул. Пушкина, д. 22" />
+                            <CFormInput
+                                type="text"
+                                placeholder="ул. Пушкина, д. 22"
+                                value={selectedFilters?.temporaryAddress}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChangeInput(event, 'temporaryAddress');
+                                    }
+                                }
+                            />
                         </div>
                     </div>
                     <div className={cls.settings}>
@@ -447,11 +529,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 value={selectedFilters?.needHostelTypes}
                                 onChange={
                                     (event: React.ChangeEvent<HTMLSelectElement>) => {
-                                        onChangeSelect(event, 'needHostelTypes');
+                                        onChangeMultipleSelect(event, 'needHostelTypes');
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.needHostelTypes.map((needHostelItem) => (
                                         <option
@@ -472,6 +554,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Проживает в хостеле</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.liveAtHostel}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'liveAtHostel');
+                                    }
+                                }
                                 id="liveInHostel"
                             />
                         </div>
@@ -488,11 +576,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 value={selectedFilters?.financingSources}
                                 onChange={
                                     (event: React.ChangeEvent<HTMLSelectElement>) => {
-                                        onChangeSelect(event, 'financingSources');
+                                        onChangeMultipleSelect(event, 'financingSources');
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.financingSources.map((financingSourceItem) => (
                                         <option
@@ -513,11 +601,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 value={selectedFilters?.admissionQuotasTypes}
                                 onChange={
                                     (event: React.ChangeEvent<HTMLSelectElement>) => {
-                                        onChangeSelect(event, 'admissionQuotasTypes');
+                                        onChangeMultipleSelect(event, 'admissionQuotasTypes');
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.admissionQuotasTypes.map((quota) => (
                                         <option
@@ -538,6 +626,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Является сиротой</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.isOrphan}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'isOrphan');
+                                    }
+                                }
                                 id="isOrphan"
                             />
                         </div>
@@ -547,6 +641,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Отсутствует попечитель</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.withoutParentalCare}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'withoutParentalCare');
+                                    }
+                                }
                                 id="isWithoutParentalCare"
                             />
                         </div>
@@ -556,6 +656,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Является инвалидом</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.isDisabledPerson}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'isDisabledPerson');
+                                    }
+                                }
                                 id="studentIsDisabledPerson"
                             />
                         </div>
@@ -569,11 +675,11 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                 value={selectedFilters?.materialAssistanceTypes}
                                 onChange={
                                     (event: React.ChangeEvent<HTMLSelectElement>) => {
-                                        onChangeSelect(event, 'materialAssistanceTypes');
+                                        onChangeMultipleSelect(event, 'materialAssistanceTypes');
                                     }
                                 }
                             >
-                                <option>Не выбрано</option>
+                                <option value="null">Не выбрано</option>
                                 {
                                     data?.materialAssistanceTypes.map((helpItem) => (
                                         <option
@@ -594,6 +700,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Из молодой семьи</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.fromYoungFamily}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'fromYoungFamily');
+                                    }
+                                }
                                 id="isFromYoungFamily"
                             />
                         </div>
@@ -608,6 +720,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Обучается по дуальной системе</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.studyInDualSystem}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'studyInDualSystem');
+                                    }
+                                }
                                 id="isStudyInDualSystem"
                             />
                         </div>
@@ -617,6 +735,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Обучался в Серпын</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.studyInSerpin}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'studyInSerpin');
+                                    }
+                                }
                                 id="isStudyInSerpin"
                             />
                         </div>
@@ -626,6 +750,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Проходил курсы продуктивной занятости</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.studyInProductiveEmployment}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'studyInProductiveEmployment');
+                                    }
+                                }
                                 id="isStudyInProductiveEmployment"
                             />
                         </div>
@@ -638,6 +768,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Прошел обучение в центре компетенции</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.completedTrainingAtCompetenceCenter}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'completedTrainingAtCompetenceCenter');
+                                    }
+                                }
                                 id="isCompletedTrainingAtCompetenceCenter"
                             />
                         </div>
@@ -647,6 +783,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Учавствовал в WorldSkills</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.studyInWorldskills}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'studyInWorldskills');
+                                    }
+                                }
                                 id="isStudyInWorldskills"
                             />
                         </div>
@@ -656,6 +798,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Вовлечен в обществуенную деятельность</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.involvedInSocialActivities}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'involvedInSocialActivities');
+                                    }
+                                }
                                 id="isInvolvedInSocialActivities"
                             />
                         </div>
@@ -667,6 +815,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Состоит в комитете молодежи</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.inYouthAffairsCommittee}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'inYouthAffairsCommittee');
+                                    }
+                                }
                                 id="isInYouthAffairsCommittee"
                             />
                         </div>
@@ -676,6 +830,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Состоит в студенческом парламенте</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.inStudentParliament}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'inStudentParliament');
+                                    }
+                                }
                                 id="isInStudentParliament"
                             />
                         </div>
@@ -685,6 +845,12 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
                                     <h6>Участвует в “Жас Сарбаз”</h6>
                                 )}
                                 className={cls.checkbox}
+                                checked={selectedFilters?.inJasSarbaz}
+                                onChange={
+                                    (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        onCheckHandler(event, 'inJasSarbaz');
+                                    }
+                                }
                                 id="isInJasSarbaz"
                             />
                         </div>
@@ -695,28 +861,42 @@ export const TableFilters = ({ className, visible, setVisible }: TableFiltersPro
     }
 
     return (
-        <CModal
-            className={classNames(cls.Filters, {}, [className])}
-            visible={visible}
-            onClose={onCloseModal}
-            size="xl"
-            scrollable
-        >
-            <CModalHeader>
-                <CModalTitle>Фильтры</CModalTitle>
-            </CModalHeader>
-            <CModalBody>
-                {filtersModal}
-            </CModalBody>
-            <CModalFooter>
-                <CButton color="primary">
-                    <CIcon icon={cilSearch} className={cls.btnIcon} />
-                    Найти
-                </CButton>
-                <CButton color="primary" variant="outline" onClick={() => setVisible(false)}>
-                    Сбросить
-                </CButton>
-            </CModalFooter>
-        </CModal>
+        <>
+            <CModal
+                className={classNames(cls.Filters, {}, [className])}
+                visible={visible}
+                onClose={onCloseModal}
+                size="xl"
+                scrollable
+            >
+                <CModalHeader>
+                    <CModalTitle>Фильтры</CModalTitle>
+                </CModalHeader>
+                <CModalBody>
+                    {filtersModal}
+                </CModalBody>
+                <CModalFooter>
+                    <CButton color="primary">
+                        <CIcon icon={cilSearch} className={cls.btnIcon} />
+                        Найти
+                    </CButton>
+                    <CButton
+                        color="primary"
+                        variant="outline"
+                        onClick={() => { dispatch(tableFiltersSelectedActions.clearFilters()); }}
+                    >
+                        Сбросить
+                    </CButton>
+                </CModalFooter>
+            </CModal>
+
+            <CToaster
+                // @ts-ignore
+                ref={toaster}
+                // @ts-ignore
+                push={toast}
+                placement="top-end"
+            />
+        </>
     );
 };

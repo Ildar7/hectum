@@ -1,4 +1,3 @@
-import { classNames } from 'shared/lib/classNames/classNames';
 import { Search } from 'widgets/Search';
 import { useCallback, useEffect, useState } from 'react';
 import { TableConfig } from 'widgets/TableConfig';
@@ -10,36 +9,57 @@ import { DynamicModuleLoader, ReducersList } from 'shared/lib/components/Dynamic
 import { useSelector } from 'react-redux';
 import { searchFilter } from 'shared/lib/searchFilter/searchFilter';
 import { tableFiltersReducer, tableFiltersSelectedReducer } from 'features/TableFilters';
-
-interface StudentsPageProps {
-  className?: string;
-}
+import {
+    getTableFieldsData, tableFieldsActions, tableFieldsReducer, TableFieldsType,
+} from 'features/TableFields';
+import { useAppDispatch } from 'shared/lib/hooks/useAppDispatch/useAppDispatch';
+import { addStudentReducer } from 'entities/AddStudent';
 
 const reducers: ReducersList = {
+    tableFields: tableFieldsReducer,
     students: studentsReducer,
     tableFilters: tableFiltersReducer,
     tableFiltersSelected: tableFiltersSelectedReducer,
+    addNewStudent: addStudentReducer,
 };
-const StudentsPage = (props: StudentsPageProps) => {
-    const {
-        className,
-    } = props;
-    const data = useSelector(getStudentsData);
+const StudentsPage = () => {
+    const dispatch = useAppDispatch();
+    const studentsData = useSelector(getStudentsData);
+    const tableFieldsData = useSelector(getTableFieldsData);
     const [searchValue, setSearchValue] = useState('');
     const [searchedData, setSearchedData] = useState<StudentsType[]>();
+    const [visibleCells, setVisibleCells] = useState<TableFieldsType>();
 
     const onSearch = useCallback((value: string) => {
         setSearchValue(value);
     }, []);
 
-    useEffect(() => {
-        setSearchedData(data || []);
-    }, [data]);
+    const onSaveFields = useCallback(() => {
+        dispatch(tableFieldsActions.saveCheckedFields());
+        setVisibleCells(tableFieldsData);
+    }, [dispatch, tableFieldsData]);
+
+    const onClearFields = useCallback(() => {
+        dispatch(tableFieldsActions.clearCheckedFields());
+        setVisibleCells(tableFieldsData);
+    }, [dispatch, tableFieldsData]);
 
     useEffect(() => {
-        const filteredData = searchFilter(searchValue, data || []);
+        setSearchedData(studentsData || []);
+    }, [studentsData]);
+
+    useEffect(() => {
+        const filteredData = searchFilter(searchValue, studentsData || []);
         setSearchedData(filteredData || []);
-    }, [data, searchValue]);
+    }, [studentsData, searchValue]);
+
+    useEffect(() => {
+        setVisibleCells(tableFieldsData);
+    }, [tableFieldsData]);
+
+    useEffect(() => {
+        dispatch(tableFieldsActions.initFieldsData());
+    }, [dispatch]);
 
     return (
         <DynamicModuleLoader reducers={reducers}>
@@ -48,9 +68,13 @@ const StudentsPage = (props: StudentsPageProps) => {
                     value={searchValue}
                     onChange={onSearch}
                 />
-                <TableConfig />
+                <TableConfig
+                    onSaveFields={onSaveFields}
+                    onClearFields={onClearFields}
+                />
                 <Students
                     data={searchedData || []}
+                    visibleCells={visibleCells}
                 />
                 <Pagintaion
                     data={searchedData || []}

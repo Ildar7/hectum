@@ -8,16 +8,14 @@ interface DatepickerProps {
   className?: string;
   startDate: Date | null;
   endDate: Date | null;
-  setStartDate: (date: Date | null) => void;
-  setEndDate: (date: Date | null) => void;
+  onChange: (date: Date | null, filterName: string, when: string) => void;
 }
 export const Datepicker = (props: DatepickerProps) => {
     const {
         className,
         startDate,
         endDate,
-        setStartDate,
-        setEndDate,
+        onChange,
     } = props;
 
     return (
@@ -27,7 +25,7 @@ export const Datepicker = (props: DatepickerProps) => {
                 selectsStart
                 startDate={startDate}
                 endDate={endDate}
-                onChange={(date) => setStartDate(date)}
+                onChange={(date) => onChange(date, '', 'from')}
                 maxDate={new Date()}
                 peekNextMonth
                 showMonthDropdown
@@ -44,7 +42,7 @@ export const Datepicker = (props: DatepickerProps) => {
                 startDate={startDate}
                 endDate={endDate}
                 minDate={startDate}
-                onChange={(date) => setEndDate(date)}
+                onChange={(date) => onChange(date, '', 'to')}
                 maxDate={new Date()}
                 peekNextMonth
                 showMonthDropdown

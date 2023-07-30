@@ -7,6 +7,8 @@ import { NavigateOptions } from 'react-router/dist/lib/context';
 import { SidebarSchema } from 'widgets/Sidebar';
 import { StudentsSchema } from 'entities/Students/model/types/students';
 import { TableFiltersSchema, TableFiltersSelectedSchema } from 'features/TableFilters';
+import { TableFieldsSchema } from 'features/TableFields';
+import { AddStudentSchema } from 'entities/AddStudent';
 
 export interface StateSchema {
     sidebar: SidebarSchema;
@@ -16,6 +18,8 @@ export interface StateSchema {
     students?: StudentsSchema;
     tableFilters?: TableFiltersSchema;
     tableFiltersSelected?: TableFiltersSelectedSchema;
+    tableFields?: TableFieldsSchema;
+    addNewStudent?: AddStudentSchema;
 }
 
 export type StateSchemaKey = keyof StateSchema;

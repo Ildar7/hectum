@@ -1,4 +1,20 @@
 .Text {
+    &.s {
+        font: var(--font-s);
+    }
+
+    &.m {
+        font: var(--font-m);
+    }
+
+    &.l {
+        font: var(--font-l);
+    }
+
+    &.xl {
+        font: var(--font-xl);
+    }
+
     &.regular {
         font-weight: var(--font-regular);
     }
@@ -18,24 +34,15 @@
     &.extrabold {
         font-weight: var(--font-extrabold);
     }
-
-    &.s {
-        font: var(--font-s);
-    }
-
-    &.m {
-        font: var(--font-m);
-    }
-
-    &.l {
-        font: var(--font-l);
-    }
-
-    &.xl {
-        font: var(--font-xl);
-    }
 }
 
 .error {
     color: var(--red-light);
+    display: flex;
+    align-items: center;
+}
+
+.errorIcon {
+    width: 20px;
+    margin-right: 5px;
 }
