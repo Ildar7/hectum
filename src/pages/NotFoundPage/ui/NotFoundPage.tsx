@@ -1,4 +1,5 @@
 import { classNames } from 'shared/lib/classNames/classNames';
+import { HelmetProvider } from 'app/providers/HelmetProvider';
 import cls from './NotFoundPage.module.scss';
 
 interface NotFoundPageProps {
@@ -6,7 +7,11 @@ interface NotFoundPageProps {
 }
 
 export const NotFoundPage = ({ className }: NotFoundPageProps) => (
-    <div className={classNames(cls.NotFoundPage, {}, [className])}>
-        Страница не найдена
-    </div>
+    <HelmetProvider
+        title="Hectum LMS - Страница не найдена"
+    >
+        <div className={classNames(cls.NotFoundPage, {}, [className])}>
+            Страница не найдена
+        </div>
+    </HelmetProvider>
 );

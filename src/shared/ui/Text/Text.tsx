@@ -6,11 +6,13 @@ import cls from './Text.module.scss';
 
 export enum TextTheme {
     DEFAULT = 'default',
-    ERROR = 'error'
+    ERROR = 'error',
+    LIGHT = 'light',
 }
 
 export enum TextSize {
     S = 's',
+    XM = 'xm',
     M = 'm',
     L = 'l',
     XL = 'xl',

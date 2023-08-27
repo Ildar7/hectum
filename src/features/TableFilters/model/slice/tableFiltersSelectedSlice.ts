@@ -34,7 +34,7 @@ const tableFiltersSelectedSlice = createSlice({
         setSelectFilter: (state, action: PayloadAction<string[]>) => {
             state.data = {
                 ...state.data,
-                [action.payload[0]]: action.payload[1],
+                [action.payload[0]]: +action.payload[1],
             };
         },
         setSelectMultipleFilter: (state, action) => {

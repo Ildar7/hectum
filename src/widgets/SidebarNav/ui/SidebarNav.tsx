@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 
 import { CBadge } from '@coreui/react';
 
-// @ts-ignore
-export const SidebarNav = ({ items }) => {
+export const SidebarNav = ({ items }: any) => {
     const location = useLocation();
-    // @ts-ignore
-    const navLink = (name, icon, badge?) => (
+    const navLink = (name: string, icon: any, badge?: any) => (
         <>
             {icon && icon}
             {name && name}
@@ -20,8 +18,7 @@ export const SidebarNav = ({ items }) => {
         </>
     );
 
-    // @ts-ignore
-    const navItem = (item, index) => {
+    const navItem = (item: any, index: any) => {
         const {
             component, name, badge, icon, ...rest
         } = item;
@@ -39,8 +36,7 @@ export const SidebarNav = ({ items }) => {
             </Component>
         );
     };
-    // @ts-ignore
-    const navGroup = (item, index) => {
+    const navGroup = (item: any, index: any) => {
         const {
             component, name, icon, to, ...rest
         } = item;
@@ -55,26 +51,18 @@ export const SidebarNav = ({ items }) => {
                 {...rest}
             >
 
-                {// @ts-ignore
-                    item.items?.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))
+                {
+                    item.items?.map((item: any, index: any) => (item.items ? navGroup(item, index) : navItem(item, index)))
                 }
             </Component>
         );
     };
 
     return (
-        // eslint-disable-next-line react/jsx-no-useless-fragment
-        <>
-            {
-                items
-                // @ts-ignore
-                && items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))
-            }
-        </>
+        items && items.map((item: any, index: any) => (item.items ? navGroup(item, index) : navItem(item, index)))
     );
 };
 
 SidebarNav.propTypes = {
-    // eslint-disable-next-line react/forbid-prop-types
-    items: PropTypes.arrayOf(PropTypes.any).isRequired,
+    items: PropTypes.arrayOf(PropTypes.any).isRequired as any,
 };

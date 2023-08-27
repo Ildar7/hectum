@@ -1,4 +1,5 @@
 import { classNames } from 'shared/lib/classNames/classNames';
+import { HelmetProvider } from 'app/providers/HelmetProvider';
 import cls from './MainPage.module.scss';
 
 interface MainPageProps {
@@ -9,9 +10,14 @@ const MainPage = (props: MainPageProps) => {
         className,
     } = props;
     return (
-        <div className={classNames(cls.MainPage, {}, [])}>
-            Главная страница
-        </div>
+        <HelmetProvider
+            title="Hectum LMS"
+        >
+            <div className={classNames(cls.MainPage, {}, [])}>
+                Главная страница
+            </div>
+        </HelmetProvider>
+
     );
 };
 

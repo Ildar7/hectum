@@ -15,10 +15,8 @@ import { SidebarNav } from 'widgets/SidebarNav';
 import _nav from 'shared/config/navbarConfig/navbarConfig';
 import { useAppDispatch } from 'shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useSelector } from 'react-redux';
-import {
-    getSidebarShow, getSidebarUnfoldable, sidebarActions, sidebarReducer,
-} from 'widgets/Sidebar';
-import { DynamicModuleLoader, ReducersList } from 'shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
+import { getSidebarShow, getSidebarUnfoldable, sidebarActions } from 'widgets/Sidebar';
+import { Text } from 'shared/ui/Text/Text';
 
 export const Sidebar = memo(() => {
     const dispatch = useAppDispatch();
@@ -35,8 +33,9 @@ export const Sidebar = memo(() => {
             }}
         >
             <CSidebarBrand className="d-none d-md-flex">
-                <CIcon className="sidebar-brand-full" icon={logoNegative} height={35} />
-                <CIcon className="sidebar-brand-narrow" icon={sygnet} height={35} />
+                <span className="sidebar-logotype">
+                    Hectum LMS
+                </span>
             </CSidebarBrand>
             <CSidebarNav>
                 <SimpleBar>

@@ -9,7 +9,7 @@ import {
     NationalityType, NeedHostelTypesType,
     QualificationsType, ResidenceTypesType,
     SpecialitiesType,
-    StudentArrivalSourcesType,
+    StudentArrivalSourcesType, StudyDirectionsType,
     StudyDurationsType, StudyLanguagesType,
     TableFiltersType,
 } from '../../types/tableFilters';
@@ -21,14 +21,15 @@ export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkC
 
         try {
             const responseGender = await extra.api.get<GenderType[]>('/college/genders/');
-            const responseNationality = await extra.api.get<NationalityType[]>('/college/nationalities/');
+            const responseNationality = await extra.api.get<NationalityType>('/college/nationalities/');
             const responseSpecialities = await extra.api.get<SpecialitiesType[]>('/college/specialties/');
-            const responseQualifications = await extra.api.get<QualificationsType[]>('/college/qualifications/');
-            const responseStudyDurations = await extra.api.get<StudyDurationsType[]>('/college/study-durations/');
-            const responseEducationsCourses = await extra.api.get<EducationsCoursesType[]>('/college/educations-courses/');
+            const responseQualifications = await extra.api.get<QualificationsType>('/college/qualifications/');
+            const responseStudyDurations = await extra.api.get<StudyDurationsType>('/college/study-durations/');
+            const responseStudyDirections = await extra.api.get<StudyDirectionsType>('/college/study-directions/');
+            const responseEducationsCourses = await extra.api.get<EducationsCoursesType>('/college/educations-courses/');
             const responseEducationsForms = await extra.api.get<EducationsFormsType[]>('/college/education-forms/');
-            const responseEnrollmentTypes = await extra.api.get<EnrollmentTypesType[]>('/college/enrollment-types/');
-            const responseCitizenshipTypes = await extra.api.get<CitizenshipTypesType[]>('/college/citizenship/');
+            const responseEnrollmentTypes = await extra.api.get<EnrollmentTypesType>('/college/enrollment-types/');
+            const responseCitizenshipTypes = await extra.api.get<CitizenshipTypesType>('/college/citizenship/');
 
             const
                 responseStudentArrivalSources = await extra.api.get<
@@ -36,11 +37,11 @@ export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkC
                     >('/college/student-arrival-sources/');
             const
                 responseFinishedEducationTypes = await extra.api.get<
-                    FinishedEducationTypesType[]
+                    FinishedEducationTypesType
                 >('/college/finished-education-types/');
             const
                 responseStudyLanguages = await extra.api.get<
-                    StudyLanguagesType[]
+                    StudyLanguagesType
                 >('/college/study-languages/');
             const
                 responseResidenceTypes = await extra.api.get<
@@ -69,6 +70,7 @@ export const fetchTableFilters = createAsyncThunk<TableFiltersType, void, ThunkC
                 speciality: responseSpecialities.data,
                 qualifications: responseQualifications.data,
                 studyDurations: responseStudyDurations.data,
+                studyDirections: responseStudyDirections.data,
                 educationsCourses: responseEducationsCourses.data,
                 educationsForms: responseEducationsForms.data,
                 enrollmentTypes: responseEnrollmentTypes.data,

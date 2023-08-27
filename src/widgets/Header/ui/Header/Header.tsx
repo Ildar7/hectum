@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
     CContainer,
     CHeader,
@@ -14,16 +14,15 @@ import CIcon from '@coreui/icons-react';
 import {
     cilBell, cilEnvelopeOpen, cilList, cilMenu,
 } from '@coreui/icons';
-
-import { logo } from 'shared/assets/icons/brand/logo';
 import { Breadcrumb } from 'widgets/Breadcrumb';
 import { useAppDispatch } from 'shared/lib/hooks/useAppDispatch/useAppDispatch';
-import { sidebarActions, sidebarReducer } from 'widgets/Sidebar';
-import { DynamicModuleLoader, ReducersList } from 'shared/lib/components/DynamicModuleLoader/DynamicModuleLoader';
+import { sidebarActions } from 'widgets/Sidebar';
 import HeaderDropdown from '../HeaderDropdown/HeaderDropdown';
+import cls from './Header.module.scss';
 
 export const Header = () => {
     const dispatch = useAppDispatch();
+    const location = useLocation();
 
     return (
         <CHeader position="sticky" className="mb-4">
@@ -39,7 +38,7 @@ export const Header = () => {
                     // @ts-ignore
                     to="/"
                 >
-                    <CIcon icon={logo} height={48} />
+                    <span className="header-mobile-logo">Hectum LMS</span>
                 </CHeaderBrand>
                 <CHeaderNav className="d-none d-md-flex me-auto">
                     <CNavItem>
@@ -70,8 +69,15 @@ export const Header = () => {
                 </CHeaderNav>
             </CContainer>
             <CHeaderDivider />
-            <CContainer fluid>
-                <Breadcrumb />
+            <CContainer fluid className={cls.breadcrumbs}>
+                {location.pathname.includes('/students') && (
+                    <Breadcrumb
+                        studentsMenu
+                    />
+                )}
+                {!location.pathname.includes('/students') && (
+                    <Breadcrumb />
+                )}
             </CContainer>
         </CHeader>
     );

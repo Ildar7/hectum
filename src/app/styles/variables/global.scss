@@ -19,6 +19,9 @@
     --font-size-s: 16px;
     --font-line-s: 25.6px;
     --font-s: var(--font-size-s) / var(--font-line-s) var(--font-family-main);
+    --font-size-xm: 18px;
+    --font-line-xm: 24px;
+    --font-xm: var(--font-size-xm) / var(--font-line-xm) var(--font-family-main);
     --font-size-m: 20px;
     --font-line-m: 28px;
     --font-m: var(--font-size-m) / var(--font-line-m) var(--font-family-main);
@@ -42,9 +45,11 @@
     --cui-sidebar-bg: #3c4b64;
     --bg-color: #ebedef;
     --border-color: rgb(177 183 193);
+    --border-card-color: #d6dbdf;
     --border-visited-color: #998fed;
     --red-light: #cf2d2d;
     --red-warning: #ec7063;
+    --footer-color: #85929e;
 
     // skeleton
     --skeleton-color: #b9b9b9;

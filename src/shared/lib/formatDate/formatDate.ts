@@ -3,5 +3,5 @@ export const formatDate = (dateArr: string[] | string | undefined) => {
         return `${dateArr[2]}-${dateArr[1]}-${dateArr[0]}`;
     }
 
-    return '';
+    return null;
 };

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { TableFiltersSchema, TableFiltersType } from 'features/TableFilters';
+import { TableFiltersSchema, TableFiltersType } from '../types/tableFilters';
 import { fetchTableFilters } from '../services/fetchTableFilters/fetchTableFilters';
 
 const initialState: TableFiltersSchema = {

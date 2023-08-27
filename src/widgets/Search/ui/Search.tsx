@@ -4,21 +4,25 @@ import CIcon from '@coreui/icons-react';
 import React, { memo } from 'react';
 
 import { classNames } from 'shared/lib/classNames/classNames';
-import { useSelector } from 'react-redux';
-import { getStudentsError, getStudentsIsLoading } from 'entities/Students';
+import { StudentsError } from 'entities/Students';
+import { EnrollmentTypesError } from 'entities/EnrollmentTypes';
 import cls from './Search.module.scss';
 
 interface SearchProps {
     value?: string;
     onChange?: (value: string) => void;
+    searchText: string;
+    error?: StudentsError | EnrollmentTypesError;
+    isLoading?: boolean;
 }
 export const Search = memo((props: SearchProps) => {
     const {
         value,
         onChange,
+        searchText,
+        error,
+        isLoading,
     } = props;
-    const isLoading = useSelector(getStudentsIsLoading);
-    const error = useSelector(getStudentsError);
     const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         onChange?.(e.target.value);
     };
@@ -41,8 +45,8 @@ export const Search = memo((props: SearchProps) => {
                         <CIcon icon={cilSearch} />
                     </CInputGroupText>
                     <CFormInput
-                        placeholder="Поиск по ФИО"
-                        aria-label="Поиск по ФИО"
+                        placeholder={searchText}
+                        aria-label={searchText}
                         aria-describedby="addon-wrapping"
                         value={value}
                         onChange={onChangeHandler}

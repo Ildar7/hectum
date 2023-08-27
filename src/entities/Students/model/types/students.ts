@@ -129,8 +129,27 @@ export interface StudentsType {
     }
 }
 
+export interface StudentsPagination {
+    total_records: number;
+    current_page: number;
+    total_pages: number;
+    next_page: number | null;
+    prev_page: number | null;
+}
+
+export interface StudentsData {
+    data: StudentsType[];
+    pagination: StudentsPagination | null;
+}
+
+export interface StudentsError {
+    status: number;
+    error: string;
+}
 export interface StudentsSchema {
-    data?: StudentsType[];
+    data?: StudentsData;
     isLoading: boolean;
-    error?: string;
+    error?: StudentsError;
+    page: string;
+    limit: string;
 }

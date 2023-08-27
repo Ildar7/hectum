@@ -1,0 +1,49 @@
+.TableBlock {
+    margin: 20px 0;
+}
+
+.table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 10px;
+
+    td,
+    th {
+        text-align: center;
+    }
+
+    td {
+        max-width: 300px;
+        white-space: normal;
+    }
+}
+
+.editBtn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    width: 35px;
+    padding: 0 !important;
+}
+
+.tableCell {
+    width: 50%;
+    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+
+    &:hover {
+        opacity: 0.8;
+        transition: opacity 0.2s ease-in-out;
+    }
+}
+
+.tableSortIcon {
+    margin-left: 5px;
+    opacity: 0;
+
+    &.active {
+        opacity: 1;
+    }
+}

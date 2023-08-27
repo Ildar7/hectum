@@ -1,0 +1,13 @@
+.ImportStudentsNav {
+    grid-gap: 10px;
+    margin-bottom: 30px;
+}
+
+.tabLink {
+    cursor: default;
+    border: 2px solid var(--border-visited-color) !important;
+
+    &.activeLink {
+        border: 2px solid transparent !important;
+    }
+}

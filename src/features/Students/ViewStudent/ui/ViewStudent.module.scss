@@ -1,0 +1,98 @@
+.modal-dialog {
+    max-width: 600px !important;
+}
+
+.tabBtn {
+    width: 100%;
+}
+
+.tabsButtonsBlock {
+    display: flex;
+    grid-gap: 20px;
+}
+
+.tab {
+    margin-top: 25px;
+}
+
+.title {
+    margin-bottom: 15px;
+    font-weight: 700;
+}
+
+.btnIcon {
+    margin-right: 5px;
+}
+
+.footerBtn {
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.redBtn {
+    background: var(--red-warning) !important;
+    color: var(--white) !important;
+    transition: opacity 0.1s ease-in-out !important;
+
+    &:hover {
+        opacity: 0.8;
+        transition: opacity 0.1s ease-in-out !important;
+    }
+}
+
+.settings {
+    display: flex;
+    grid-gap: 15px;
+    margin-bottom: 15px;
+    align-items: stretch;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.newAddField {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    h6 {
+        font-weight: 400;
+        margin-bottom: 0;
+    }
+}
+
+.tabBlock {
+    border-bottom: 1px solid var(--border-card-color);
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+
+    &:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.message {
+    display: flex;
+    align-items: center;
+    color: var(--red-warning);
+}
+
+.messageIcon {
+    margin-right: 10px;
+    width: 25px;
+}
+
+.checkboxText {
+    font-weight: 700;
+}

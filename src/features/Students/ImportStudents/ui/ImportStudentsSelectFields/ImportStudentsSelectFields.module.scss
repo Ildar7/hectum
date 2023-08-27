@@ -1,0 +1,56 @@
+.ImportStudentsSelectFields {
+    padding-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.content {
+    display: flex;
+    align-items: stretch;
+    grid-gap: 20px;
+    width: 100%;
+
+    & > div {
+        &:first-child,
+        &:last-child {
+            flex: 1;
+        }
+    }
+}
+
+.selectField {
+    margin-bottom: 15px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.emptyTitle {
+    height: calc(19.2px + 0.5rem);
+}
+
+.middle {
+    display: flex;
+    flex-direction: column;
+}
+
+.iconBlock {
+    margin-bottom: 15px;
+    height: 37.6px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.arrowIcon {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+.importBtn {
+    margin-top: 10px;
+    padding: 10px 50px !important;
+}

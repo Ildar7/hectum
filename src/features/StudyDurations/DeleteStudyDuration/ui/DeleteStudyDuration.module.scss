@@ -1,0 +1,28 @@
+.footerBtn {
+    margin-right: 10px;
+
+    &:last-child {
+        margin-right: 0;
+    }
+}
+
+.redBtn {
+    background: var(--red-warning) !important;
+    color: var(--white) !important;
+    transition: opacity 0.1s ease-in-out !important;
+
+    &:hover {
+        opacity: 0.8;
+        transition: opacity 0.1s ease-in-out !important;
+    }
+}
+
+.btnIcon {
+    margin-right: 5px;
+}
+
+.deleteText {
+    span {
+        font-weight: 700;
+    }
+}

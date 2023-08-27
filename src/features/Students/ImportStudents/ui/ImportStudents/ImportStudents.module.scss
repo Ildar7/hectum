@@ -1,0 +1,29 @@
+.ImportStudents {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    min-height: calc(100vh - 235px - 1.5rem);
+    display: flex;
+    position: relative;
+
+    &.centered {
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.backBtn {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    background: var(--red-warning) !important;
+    color: var(--white) !important;
+    transition: opacity 0.1s ease-in-out !important;
+
+    &:hover {
+        opacity: 0.8;
+        transition: opacity 0.1s ease-in-out !important;
+    }
+}

@@ -3,6 +3,10 @@
         font: var(--font-s);
     }
 
+    &.xm {
+        font: var(--font-xm);
+    }
+
     &.m {
         font: var(--font-m);
     }
@@ -45,4 +49,8 @@
 .errorIcon {
     width: 20px;
     margin-right: 5px;
+}
+
+.light {
+    color: var(--footer-color);
 }

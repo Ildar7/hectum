@@ -1,0 +1,58 @@
+.btnBlock,
+.forgotBlock {
+    width: auto;
+    max-width: none;
+}
+
+.btnLogin {
+    margin-top: 15px;
+}
+
+.title {
+    text-align: center;
+}
+
+.btnRow {
+    justify-content: center;
+}
+
+.eyeIcon {
+    width: 20px;
+}
+
+.showPassBtn {
+    position: absolute;
+    top: 19px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    transform: translateY(-50%);
+    right: 10px;
+    border: none;
+    background: none;
+    z-index: 10;
+
+    .eyeIcon {
+        fill: rgb(177 183 193);
+        transition: all 0.2s ease-in-out;
+    }
+
+    &:hover {
+        .eyeIcon {
+            fill: black;
+            transition: all 0.2s ease-in-out;
+        }
+    }
+
+    &.invalidBtn {
+        right: 30px;
+    }
+}
+
+.eyeShowIcon {
+    transform: scale(1.11);
+}
+
+.loginInput {
+    background-image: none !important;
+}

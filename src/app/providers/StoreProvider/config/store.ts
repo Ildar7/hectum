@@ -5,6 +5,10 @@ import { $api } from 'shared/api/api';
 import { To } from '@remix-run/router';
 import { NavigateOptions } from 'react-router/dist/lib/context';
 import { sidebarReducer } from 'widgets/Sidebar';
+import { userReducer } from 'entities/User';
+import { studentsReducer } from 'entities/Students';
+import { tableFiltersSelectedReducer } from 'features/TableFilters';
+import { tableSortReducer } from 'features/TableSort';
 import { createReducerManager } from './reducerManager';
 import { StateSchema } from './StateSchema';
 
@@ -16,6 +20,10 @@ export function createReduxStore(
     const rootReducers: ReducersMapObject<StateSchema> = {
         ...asyncReducers,
         sidebar: sidebarReducer,
+        user: userReducer,
+        students: studentsReducer,
+        tableFiltersSelected: tableFiltersSelectedReducer,
+        tableSort: tableSortReducer,
     };
 
     const reducerManager = createReducerManager(rootReducers);

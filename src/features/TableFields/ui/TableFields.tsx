@@ -2,7 +2,7 @@ import { classNames } from 'shared/lib/classNames/classNames';
 import {
     CButton, CFormCheck, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CToaster,
 } from '@coreui/react';
-import React, { useRef, useState } from 'react';
+import React, { ReactElement, useRef, useState } from 'react';
 import { useAppDispatch } from 'shared/lib/hooks/useAppDispatch/useAppDispatch';
 import { useSelector } from 'react-redux';
 import { Toast } from 'shared/ui/Toast/Toast';
@@ -22,8 +22,8 @@ export const TableFields = ({
 }: TableFieldsProps) => {
     const dispatch = useAppDispatch();
     const tableFieldsData = useSelector(getTableFieldsData);
-    const [toast, addToast] = useState();
-    const toaster = useRef();
+    const [toast, addToast] = useState<ReactElement>();
+    const toaster = useRef<HTMLDivElement | null>(null);
     const onCloseModal = () => {
         setVisible(false);
     };
@@ -631,7 +631,6 @@ export const TableFields = ({
                         color="primary"
                         onClick={() => {
                             onSaveFields();
-                            // @ts-ignore
                             addToast(Toast.success('Изменения успешно сохранены'));
                             onCloseModal();
                         }}
@@ -643,7 +642,6 @@ export const TableFields = ({
                         variant="outline"
                         onClick={() => {
                             onClearFields();
-                            // @ts-ignore
                             addToast(Toast.success('Изменения успешно сохранены'));
                         }}
                     >
@@ -653,9 +651,7 @@ export const TableFields = ({
             </CModal>
 
             <CToaster
-                // @ts-ignore
                 ref={toaster}
-                // @ts-ignore
                 push={toast}
                 placement="top-end"
             />
